@@ -62,6 +62,8 @@
     <Compile Include="DAC\CKCustPoolAttribute.cs" />
     <Compile Include="DAC\CKLeadLaunch.cs" />
     <Compile Include="DAC\LUMCompanyTreeMember.cs" />
+    <Compile Include="DAC\LUMManualForecastAdjustment.cs" />
+    <Compile Include="Graph\LUMForecastAdjustmentMaint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
