@@ -1,5 +1,0 @@
-﻿<Automation screen="CR304000">
-    <Fields ScreenID="CR304000">
-        <Field IsActive="True" DisplayName="Source" FieldName="Source" HideCondition="True" ObjectName="PX.Objects.CR.CROpportunity" ComboBoxValues="Set|S|自行開發;Set|C|公司活動;Set|R|客戶轉介;Set|O|Other;Set|W|原廠介紹;Set|H|客戶主動聯繫(Phone);Set|L|客戶主動聯繫(Email);SetFromUI|A|主管指派" />
-    </Fields>
-</Automation>

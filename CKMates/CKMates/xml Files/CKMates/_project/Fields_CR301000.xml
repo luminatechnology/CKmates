@@ -1,7 +1,0 @@
-﻿<Fields ScreenID="CR301000">
-    <Field IsActive="True" IsSystem="True" IsCustomized="False" IsCustomizedRecursive="False" FieldName="Status" ObjectName="PX.Objects.CR.CRLead" ComboBoxValues="Set|S|Suspended" />
-    <Field IsActive="True" IsSystem="True" IsCustomized="True" IsCustomizedRecursive="False" FieldName="Resolution" ObjectName="PX.Objects.CR.CRLead" ComboBoxValues="Set|CR|Created;Set|PI|Potential Interest;Set|SB|Subscribed;Set|IQ|Inquiry;Set|QM|Qualified by Marketing;Set|AS|Accepted by Sales;Set|QS|Qualified by Sales;Set|NI|No Interest;Set|DL|Duplicate;Set|CL|Unable To Contact;Set|OT|Other;SetFromUI|NA|非TA;SetFromUI|BL|黑名單">
-        <OriginalState IsActive="True" IsSystem="True" IsCustomized="False" IsCustomizedRecursive="False" FieldName="Resolution" ObjectName="PX.Objects.CR.CRLead" ComboBoxValues="Set|CR|Created;Set|PI|Potential Interest;Set|SB|Subscribed;Set|IQ|Inquiry;Set|QM|Qualified by Marketing;Set|AS|Accepted by Sales;Set|QS|Qualified by Sales;Set|NI|No Interest;Set|DL|Duplicate;Set|CL|Unable To Contact;Set|OT|Other" />
-    </Field>
-    <Field IsActive="True" DisplayName="Source" FieldName="Source" HideCondition="True" ObjectName="PX.Objects.CR.CRLead" ComboBoxValues="Set|S|自行開發;Set|C|公司活動;Set|R|客戶轉介;Set|O|Other;Set|W|原廠介紹;Set|H|客戶主動聯繫(Phone);Set|L|客戶主動聯繫(Email);SetFromUI|A|主管指派" />
-</Fields>

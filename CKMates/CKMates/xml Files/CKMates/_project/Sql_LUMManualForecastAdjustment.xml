@@ -1,0 +1,31 @@
+﻿<Sql TableName="LUMManualForecastAdjustment" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMManualForecastAdjustment">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="WorkgroupID" type="Int" />
+  <col name="Year" type="Int" />
+  <col name="Period1" type="Int" nullable="true" />
+  <col name="Period2" type="Int" nullable="true" />
+  <col name="Period3" type="Int" nullable="true" />
+  <col name="Period4" type="Int" nullable="true" />
+  <col name="Period5" type="Int" nullable="true" />
+  <col name="Period6" type="Int" nullable="true" />
+  <col name="Period7" type="Int" nullable="true" />
+  <col name="Period8" type="Int" nullable="true" />
+  <col name="Period9" type="Int" nullable="true" />
+  <col name="Period10" type="Int" nullable="true" />
+  <col name="Period11" type="Int" nullable="true" />
+  <col name="Period12" type="Int" nullable="true" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <col name="tstamp" type="Timestamp" />
+  <index name="PK_LUMManualForecastAdjustment" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="WorkgroupID" />
+    <col name="Year" />
+  </index>
+</table>]]></CDATA>
+</Sql>
