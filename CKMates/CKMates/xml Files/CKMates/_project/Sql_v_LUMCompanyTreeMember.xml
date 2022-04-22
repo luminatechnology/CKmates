@@ -1,0 +1,55 @@
+﻿<Sql TableName="v_LUMCompanyTreeMember" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[/*
+1. 基於EPCompanyTreeMember 把對應的Root WGID 串出來
+2. 若 Parent = Root WGID, 則 Paret WGID = 自己
+3. 若 Member 出現在多個 WGID中，則以High Level WorkGroup 為主
+*/
+
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'LUMCompanyTreeMember' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[LUMCompanyTreeMember]	
+GO
+CREATE VIEW LUMCompanyTreeMember AS
+
+
+WITH EPH AS (SELECT CompanyID, WorkGroupID, WorkGroupLevel, ParentWGID, ParentWGLevel, WaitTime
+                             FROM     dbo.EPCompanyTreeH
+                             WHERE  (WorkGroupLevel = ParentWGLevel + 1) AND (CompanyID > 0)), 
+	 EPHCTE(CompanyID, ParentWGID, WorkGroupID, ChildLevel) AS
+	(SELECT CompanyID, ParentWGID, WorkGroupID, 1 AS ChildLevel
+     FROM      EPH AS EPH_1
+     UNION ALL
+     SELECT FT.CompanyID, FT.ParentWGID, Child.WorkGroupID, Child.ChildLevel + 1 AS Expr1
+     FROM     EPH AS FT INNER JOIN
+                       EPHCTE AS Child ON FT.CompanyID = Child.CompanyID AND FT.WorkGroupID = Child.ParentWGID)
+
+
+select Top 1 with ties
+
+EPCompanyTreeMember.CompanyID,
+EPCompanyTreeMember.ContactID,
+EPCompanyTreeMember.WorkGroupID,
+IIf(EPCompanyTree.ParentWGID = EPHCTE.ParentWGID, EPCompanyTreeMember.WorkGroupID,EPCompanyTree.ParentWGID ) as ParentWGID,
+IIf(EPCompanyTree.ParentWGID = 0, EPCompanyTreeMember.WorkgroupID, EPHCTE.ParentWGID) as RootWGID,
+IIf(EPCompanyTree.ParentWGID = 0, 0, EPHCTE.ChildLevel) as ChildLevel
+
+
+from EPCompanyTreeMember 
+	left join EPHCTE 
+		on  EPCompanyTreeMember.CompanyID = EPHCTE.CompanyID
+		and EPCompanyTreeMember.WorkGroupID = EPHCTE.WorkgroupID
+
+	inner join EPCompanyTree
+		on  EPCompanyTreeMember.CompanyID = EPCompanyTree.CompanyID
+		and EPCompanyTreeMember.WorkGroupID = EPCompanyTree.WorkGroupID
+
+order by row_number() over (partition by 
+							EPCompanyTreeMember.CompanyID,
+							EPCompanyTreeMember.ContactID,
+							EPHCTE.ParentWGID
+							order by EPHCTE.ChildLevel)]]></CDATA>
+</Sql>

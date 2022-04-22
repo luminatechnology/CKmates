@@ -1,0 +1,15 @@
+﻿<Sql TableName="v_CKARRSummary" SqlScriptPriority="1" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'CKARRSummary' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[CKARRSummary]	
+GO
+CREATE VIEW CKARRSummary AS
+
+SELECT CompanyID, CampaignSourceID,  AVG(InvoiceAmt) AS AvgAmt, AVG(InvoiceAmt) * 12 AS ARRAmt
+FROM     dbo.CKARRDetail
+GROUP BY CompanyID, CampaignSourceID]]></CDATA>
+</Sql>

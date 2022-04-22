@@ -1,0 +1,30 @@
+﻿<Sql TableName="v_CKLeadLaunch" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'CKLeadLaunch' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[CKLeadLaunch]	
+GO
+CREATE VIEW CKLeadLaunch AS
+
+
+
+select
+CROpportunity.CompanyID,
+CROpportunity.LeadID,
+Contact.ContactID
+
+from CROpportunity 
+	inner join Contact 
+		on CROpportunity.CompanyID = Contact.CompanyID
+		and CROpportunity.LeadID = Contact.NoteID
+		and CROpportunity.Status = 'W'
+where CROpportunity.CompanyID = 2 
+group by
+CROpportunity.CompanyID,
+CROpportunity.LeadID,
+Contact.ContactID]]></CDATA>
+</Sql>

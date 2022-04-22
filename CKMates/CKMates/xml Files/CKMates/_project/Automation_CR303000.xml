@@ -1,0 +1,5 @@
+﻿<Automation screen="CR303000">
+    <Fields ScreenID="CR303000">
+        <Field IsActive="True" FieldName="Source" HideCondition="True" ObjectName="PX.Objects.CR.BAccount" />
+    </Fields>
+</Automation>

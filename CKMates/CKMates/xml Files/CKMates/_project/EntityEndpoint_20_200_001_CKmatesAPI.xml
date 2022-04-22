@@ -1,0 +1,68 @@
+﻿<EntityEndpoint>
+    <Endpoint xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="CKmatesAPI" version="20.200.001" systemContractVersion="4" xmlns="http://www.acumatica.com/entity/maintenance/5.31">
+        <ExtendsEndpoint name="Default" version="20.200.001" />
+        <TopLevelEntity name="CustomerPool" screen="GI000017">
+            <Fields>
+                <Field name="CustomerPoolDetails" type="CustomerPoolDetail[]" />
+                <Field name="Email" type="StringValue" />
+            </Fields>
+            <Mappings>
+                <Mapping field="Email">
+                    <To object="Filter" field="Email" />
+                </Mapping>
+                <Mapping field="CustomerPoolDetails">
+                    <Mapping field="BusinessAccount">
+                        <To object="Results" field="Contact_bAccountID" />
+                    </Mapping>
+                    <Mapping field="Contact">
+                        <To object="Results" field="Contact_contactID_description" />
+                    </Mapping>
+                    <Mapping field="Email">
+                        <To object="Results" field="Contact_eMail" />
+                    </Mapping>
+                    <Mapping field="Type">
+                        <To object="Results" field="Contact_contactType" />
+                    </Mapping>
+                    <Mapping field="ContactID">
+                        <To object="Results" field="Contact_contactID" />
+                    </Mapping>
+                    <Mapping field="LeadID">
+                        <To object="Results" field="Lead_ContactID" />
+                    </Mapping>
+                </Mapping>
+            </Mappings>
+        </TopLevelEntity>
+        <Detail name="CustomerPoolDetail">
+            <Fields>
+                <Field name="BusinessAccount" type="StringValue" />
+                <Field name="Contact" type="StringValue" />
+                <Field name="ContactID" type="IntValue" />
+                <Field name="Email" type="StringValue" />
+                <Field name="LeadID" type="IntValue" />
+                <Field name="Type" type="StringValue" />
+            </Fields>
+        </Detail>
+        <TopLevelEntity name="BusinessAccount" screen="CR303000">
+            <Fields>
+                <Field name="DoNotCall" type="BooleanValue" />
+                <Field name="DoNotEmail" type="BooleanValue" />
+                <Field name="NoMarketing" type="BooleanValue" />
+                <Field name="NoMassMail" type="BooleanValue" />
+            </Fields>
+            <Mappings>
+                <Mapping field="DoNotCall">
+                    <To object="DefContact: 2" field="NoCall" />
+                </Mapping>
+                <Mapping field="DoNotEmail">
+                    <To object="DefContact: 2" field="NoEMail" />
+                </Mapping>
+                <Mapping field="NoMarketing">
+                    <To object="DefContact: 2" field="NoMarketing" />
+                </Mapping>
+                <Mapping field="NoMassMail">
+                    <To object="DefContact: 2" field="NoMassMail" />
+                </Mapping>
+            </Mappings>
+        </TopLevelEntity>
+    </Endpoint>
+</EntityEndpoint>
