@@ -1,0 +1,189 @@
+﻿<Sql TableName="Create_v_GI_RollingForcastProcessResult" SqlScriptPriority="8" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_GI_RollingForcastProcessResult' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_GI_RollingForcastProcessResult]	
+GO
+CREATE VIEW v_GI_RollingForcastProcessResult AS
+-- 祖產(BASE)
+WITH tmpCalculateBaseResult AS (
+	SELECT  quota.CompanyID,
+			N'祖產(Base)' AS ForecastType,
+			quota.WorkGroupID,
+			quota.FinYear AS FinYear,
+			quota.SubFinPeriodID,
+			calResult.CalculateResult AS Amount,
+			7 AS OrderSeq
+	FROM v_BaseQuotaResult quota
+	INNER JOIN [dbo].[CalculateRollingForecastBase]() calResult ON quota.CompanyID = calResult.CompanyID
+															   AND quota.WorkGroupID = calResult.WorkGroupID
+															   AND quota.SubFinperiodID = calResult.Finperiod
+															   AND quota.FinYear = calResult.Year
+),
+-- 預估業績
+tmpEstimatePerformance AS (
+	SELECT calcResult.CompanyID,
+		   N'預估業績' AS ForecastType,
+		   calcResult.WorkGroupID,
+		   calcResult.FinYear,
+		   calcResult.SubFinPeriodID,
+		   ISNULL(OppMRC.Amount,0) + ISNULL(OppNotMRC.Amount,0) + ISNULL(calcResult.Amount,0) AS Amount,
+		   8 AS OrderSeq
+	FROM tmpCalculateBaseResult calcResult
+	FULL JOIN v_BaseOpportunityMRCResult OppMRC ON OppMRC.CompanyID = calcResult.CompanyID
+											   AND OppMRC.WorkGroupID = calcResult.WorkGroupID
+											   AND OppMRC.FinYear = calcResult.FinYear
+											   AND OppMRC.SubFinPeriodID = calcResult.SubFinPeriodID
+	FULL JOIN v_BaseOpportunityNotMRCResult OppNotMRC ON OppMRC.CompanyID = OppNotMRC.CompanyID
+													 AND OppMRC.WorkGroupID = OppNotMRC.WorkGroupID
+													 AND OppMRC.FinYear = OppNotMRC.FinYear
+													 AND OppMRC.SubFinPeriodID = OppNotMRC.SubFinPeriodID
+	
+),
+tmpPerformance AS (
+	SELECT ISNULL(billing.CompanyID,estimatePerformance.CompanyID) AS CompanyID,
+		   N'業績數' AS ForecastType,
+		   ISNULL(billing.WorkGroupID,estimatePerformance.WorkGroupID) AS WorkGroupID,
+		   ISNULL(billing.FinYear,estimatePerformance.FinYear) AS FinYear,		
+		   ISNULL(billing.SubFinperiodID,estimatePerformance.SubFinperiodID) AS SubFinperiodID,
+		   IIF(ISNULL(billing.Amount,0) = 0,estimatePerformance.Amount,billing.Amount) AS Amount,
+		   9 AS OrderSeq
+	FROM v_BaseBillingResult billing
+	FULL JOIN tmpEstimatePerformance estimatePerformance ON billing.CompanyID = estimatePerformance.CompanyID
+														AND billing.WorkGroupID = estimatePerformance.WorkGroupID
+														AND billing.FinYear = estimatePerformance.FinYear
+														AND billing.SubFinPeriodID = estimatePerformance.SubFinPeriodID
+),
+tmpAchievmentRate AS (
+	SELECT quota.CompanyID,
+		   N'當月達成率' AS ForecastType,
+		   quota.WorkGroupID,
+		   quota.FinYear,
+		   quota.SubFinperiodID,
+		   ISNULL(performance.Amount,0) / quota.Amount AS Amount,
+		   10 AS OrderSeq
+	FROM v_BaseQuotaResult quota
+	FULL JOIN tmpPerformance performance ON quota.CompanyID = performance.CompanyID
+										AND quota.WorkGroupID = performance.WorkGroupID
+										AND quota.FinYear = performance.FinYear
+										AND quota.SubFinperiodID = performance.SubFinperiodID
+),
+tmpColumnReName AS(
+	SELECT 'Period01' AS SubFinperiodID, '1/01' AS ReNameCol
+	UNION
+	SELECT 'Period02' AS SubFinperiodID, '2/01' AS ReNameCol
+	UNION
+	SELECT 'Period03' AS SubFinperiodID, '3/01' AS ReNameCol
+	UNION
+	SELECT 'Period04' AS SubFinperiodID, '4/01' AS ReNameCol
+	UNION
+	SELECT 'Period05' AS SubFinperiodID, '5/01' AS ReNameCol
+	UNION
+	SELECT 'Period06' AS SubFinperiodID, '6/01' AS ReNameCol
+	UNION
+	SELECT 'Period07' AS SubFinperiodID, '7/01' AS ReNameCol
+	UNION
+	SELECT 'Period08' AS SubFinperiodID, '8/01' AS ReNameCol
+	UNION
+	SELECT 'Period09' AS SubFinperiodID, '9/01' AS ReNameCol
+	UNION
+	SELECT 'Period10' AS SubFinperiodID, '10/01' AS ReNameCol
+	UNION
+	SELECT 'Period11' AS SubFinperiodID, '11/01' AS ReNameCol
+	UNION
+	SELECT 'Period12' AS SubFinperiodID, '12/01' AS ReNameCol
+)
+SELECT t.CompanyID,
+	   t.ForecastType,
+	   t.WorkGroupID,
+	   t.FinYear,
+	   CAST(CAST(t.FinYear AS NVARCHAR(4)) + '/' + tmpReName.ReNameCol AS DateTime) AS SubFinperiodID,
+	   t.Amount,
+	   t.OrderSeq
+FROM(
+	-- Quota
+	SELECT *
+	FROM v_BaseQuotaResult
+	UNION
+	-- Billing
+	SELECT *
+	FROM v_BaseBillingResult
+	UNION
+	-- Billing MRC
+	SELECT *
+	FROM v_BaseBillingMRCResult
+	UNION
+	-- Opportunity MRC
+	SELECT *
+	FROM v_BaseOpportunityMRCResult
+	UNION
+	-- Opportunity Not MRC
+	SELECT *
+	FROM v_BaseOpportunityNotMRCResult
+	UNION
+	-- Base
+	SELECT *
+	FROM tmpCalculateBaseResult
+	UNION
+	-- 預估業績(Estimate Performance)
+	SELECT *
+	FROM tmpEstimatePerformance
+	UNION
+	-- 業績(Performance)
+	SELECT *
+	FROM tmpPerformance
+	UNION
+	-- 當月達成率(Achievement rate)
+	SELECT *
+	FROM tmpAchievmentRate
+	-- 當月累積達成率(Summary)
+	UNION
+	SELECT quota.CompanyID,
+		   N'當月累計達成率' AS ForecastType,
+		   quota.WorkGroupID,
+		   quota.FinYear,
+		   quota.SubFinperiodID,
+		   ISNULL(performance.SummaryValue,0) / ISNULL(quota.SummaryValue,0) AS Amount,
+		   11 AS OrderSeq
+	FROM (
+		SELECT *,SUM(Amount) Over(PARTITION  by Finyear,WorkgroupID,CompanyID,ForecastType ORDER BY SubFinPeriodID) AS SummaryValue
+		FROM v_BaseQuotaResult
+	)  quota
+	LEFT JOIN (
+		SELECT *,SUM(Amount) Over(PARTITION  by Finyear,WorkgroupID,CompanyID,ForecastType ORDER BY SubFinperiodID) AS SummaryValue
+		FROM tmpPerformance performance
+	) performance ON quota.CompanyID = performance.CompanyID
+				 AND quota.WorkGroupID = performance.WorkGroupID
+				 AND quota.FinYear = performance.FinYear
+				 AND quota.SubFinperiodID = performance.SubFinperiodID
+	UNION
+	SELECT CompanyID,ForecastType,WorkGroupID,FinYear,SubFinperiodID,Amount,OrderSeq
+	FROM(
+		 SELECT CompanyID,
+				 N'預估Base調整' ForecastType,
+				WorkGroupID,
+				Year AS FinYear,
+				6 AS OrderSeq,
+				ISNULL(Period01,0) AS Period01,
+				ISNULL(Period02,0) AS Period02,
+				ISNULL(Period03,0) AS Period03,
+				ISNULL(Period04,0) AS Period04,
+				ISNULL(Period05,0) AS Period05,
+				ISNULL(Period06,0) AS Period06,
+				ISNULL(Period07,0) AS Period07,
+				ISNULL(Period08,0) AS Period08,
+				ISNULL(Period09,0) AS Period09,
+				ISNULL(Period10,0) AS Period10,
+				ISNULL(Period11,0) AS Period11,
+				ISNULL(Period12,0) AS Period12
+		 FROM LUMManualForecastAdjustment
+	)t
+	UNPIVOT(
+		Amount FOR SubFinperiodID IN (t.[Period01],t.[Period02],t.[Period03],t.[Period04],t.[Period05],t.[Period06],t.[Period07],t.[Period08],t.[Period09],t.[Period10],t.[Period11],t.[Period12])
+	) pv
+) t 
+INNER JOIN tmpColumnReName tmpReName ON t.SubFinperiodID = tmpReName.SubFinperiodID]]></CDATA>
+</Sql>

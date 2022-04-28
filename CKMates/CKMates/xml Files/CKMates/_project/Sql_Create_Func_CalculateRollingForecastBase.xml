@@ -1,0 +1,97 @@
+﻿<Sql TableName="Create_Func_CalculateRollingForecastBase" SqlScriptPriority="2" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[CREATE OR ALTER FUNCTION CalculateRollingForecastBase ( )
+RETURNS @Result Table(
+	ForecastType NVARCHAR(20),
+	CompanyID INT,
+	WorkgroupID INT,
+	Year INT,
+	FinPeriod NVARCHAR(20),
+	CalculateResult DECIMAL(18,6)
+)
+BEGIN
+	DECLARE @ActYear INT
+	DECLARE @EndOfYear INT
+	DECLARE @ActMonth INT
+	DECLARE @ActWorkgroupID INT
+	DECLARE @ActCompanyID INT
+	DECLARE @LastMonthBaseValue DECIMAL(18,6)
+	DECLARE @DynamicSQL NVARCHAR(1000)
+	DECLARE @PrevBillingResult DECIMAL(18,6)
+	DECLARE @PrevOppMRCResult DECIMAL(18,6)
+	DECLARE @ActAdjustment DECIMAL(18,6)
+	-- 找出所有年/Workgroup/CompanyID
+	DECLARE quota_cursor CURSOR FAST_FORWARD FOR
+		SELECT DISTINCT CompanyID,WorkGroupID,FinYear
+		FROM v_BaseQuotaResult
+
+	OPEN quota_cursor
+	FETCH NEXT FROM  quota_cursor INTO @ActCompanyID,@ActWorkgroupID,@ActYear
+	-- 執行
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		SET @ActMonth = 1
+		WHILE(@ActMonth <= 12)
+		BEGIN
+			-- 當月調整數
+			SET @ActAdjustment = (
+				SELECT AdjValue
+				FROM (
+					Select *
+					from LUMManualForecastAdjustment ) t
+				UNPIVOT(
+					AdjValue FOR Period IN (t.[Period01],t.[Period02],t.[Period03],t.[Period04],t.[Period05],t.[Period06],t.[Period07],t.[Period08],t.[Period09],t.[Period10],t.[Period11],t.[Period12])
+				) unpv
+				WHERE unpv.Period = 'Period'+ RIGHT('0' + RTRIM (@ActMonth),2) 
+				  AND unpv.Year = @ActYear
+				  AND unpv.WorkgroupID = @ActWorkgroupID
+				  AND unpv.CompanyID = @ActCompanyID
+			)
+			IF (@ActMonth = 1)
+			BEGIN
+				SET @LastMonthBaseValue = (SELECT ISNULL(Amount,0) 
+											 FROM v_BaseBillingResult 
+											 WHERE CompanyID = @ActCompanyID
+											   AND WorkGroupID = @ActWorkgroupID
+											   AND FinYear = @ActYear - 1
+											   AND SubFinPeriodID = 'Period12')
+				INSERT INTO @Result VALUES(N'祖產(Base)',@ActCompanyID,@ActWorkgroupID,@ActYear,'Period'+RIGHT('0' + RTRIM (@ActMonth),2),ISNULL(@ActAdjustment,@LastMonthBaseValue))
+			END -- End of ActMont = 1
+			ELSE
+			BEGIN
+				-- 前期BillingMRC
+				SET @PrevBillingResult = (
+					SELECT ISNULL(Amount,0) AS PrevBillResult
+					FROM v_BaseBillingMRCResult billing
+					WHERE billing.SubFinPeriodID = 'Period'+ RIGHT('0' + RTRIM (@ActMonth-1),2) 
+					  AND billing.FinYear = @ActYear
+					  AND billing.WorkgroupID = @ActWorkgroupID
+					  AND billing.CompanyID = @ActCompanyID
+				)
+				-- 前期Opportunity MRC
+				SET @PrevOppMRCResult =  (
+						SELECT ISNULL(Amount,0) AS PrevOppMRCResult
+						FROM v_BaseOpportunityMRCResult OppMRC
+						WHERE OppMRC.SubFinPeriodID = 'Period'+ RIGHT('0' + RTRIM (@ActMonth-1),2) 
+						  AND OppMRC.FinYear = @ActYear
+						  AND OppMRC.WorkgroupID = @ActWorkgroupID
+						  AND OppMRC.CompanyID = @ActCompanyID
+				)
+				 SET @LastMonthBaseValue = (
+					SELECT CASE 
+							WHEN @ActAdjustment IS NOT NULL THEN @ActAdjustment
+							WHEN @PrevBillingResult IS NOT NULL THEN @PrevBillingResult
+						   ELSE @LastMonthBaseValue + ISNULL(@PrevOppMRCResult,0) END AS GG
+				 )
+				 INSERT INTO @Result
+				 SELECT N'祖產(Base)',@ActCompanyID,@ActWorkgroupID,@ActYear,'Period'+RIGHT('0' + RTRIM (@ActMonth),2),@LastMonthBaseValue
+			END -- End of Month != 1(ELSE)
+			SET @ActMonth = @ActMonth + 1
+		END -- End of Month Loop
+		FETCH NEXT FROM  quota_cursor INTO @ActCompanyID,@ActWorkgroupID,@ActYear
+	END -- End Of Cursor
+	CLOSE quota_cursor
+	DEALLOCATE quota_cursor
+	RETURN 
+END
+GO]]></CDATA>
+</Sql>

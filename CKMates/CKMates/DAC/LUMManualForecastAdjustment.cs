@@ -1,5 +1,9 @@
 using System;
 using PX.Data;
+using PX.Data.BQL.Fluent;
+using PX.Objects.CR;
+using PX.TM;
+using static PX.Data.PXAccess;
 
 namespace CKMates.DAC
 {
@@ -9,79 +13,88 @@ namespace CKMates.DAC
     {
         #region WorkgroupID
         [PXDBInt(IsKey = true)]
-        [PXUIField(DisplayName = "Workgroup ID")]
+        [PXDefault]
+        [PXSelector(typeof(SelectFrom<EPCompanyTree>
+                          .InnerJoin<EPCompanyTreeMember>.On<EPCompanyTreeMember.workGroupID.IsEqual<EPCompanyTree.workGroupID>>
+                          .InnerJoin<BAccount2>.On<EPCompanyTreeMember.contactID.IsEqual<BAccount2.defContactID>>
+                          .InnerJoin<EPEmployee>.On<BAccount2.bAccountID.IsEqual<EPEmployee.bAccountID>>
+                          .Where<EPEmployee.userID.IsEqual<AccessInfo.userID.FromCurrent>>
+                          .SearchFor<EPCompanyTree.workGroupID>),
+                    SubstituteKey = typeof(EPCompanyTree.description))]
+        [PXUIField(DisplayName = "Workgroup ID", Enabled = false)]
         public virtual int? WorkgroupID { get; set; }
         public abstract class workgroupID : PX.Data.BQL.BqlInt.Field<workgroupID> { }
         #endregion
 
         #region Year
         [PXDBInt(IsKey = true)]
-        [PXUIField(DisplayName = "Year")]
+        [PXDefault]
+        [PXUIField(DisplayName = "Year",Enabled = false)]
         public virtual int? Year { get; set; }
         public abstract class year : PX.Data.BQL.BqlInt.Field<year> { }
         #endregion
 
-        #region Period1
+        #region Period01
         [PXDBInt()]
-        [PXUIField(DisplayName = "Period1")]
-        public virtual int? Period1 { get; set; }
-        public abstract class period1 : PX.Data.BQL.BqlInt.Field<period1> { }
+        [PXUIField(DisplayName = "Period01")]
+        public virtual int? Period01 { get; set; }
+        public abstract class period01 : PX.Data.BQL.BqlInt.Field<period01> { }
         #endregion
 
-        #region Period2
+        #region Period02
         [PXDBInt()]
-        [PXUIField(DisplayName = "Period2")]
-        public virtual int? Period2 { get; set; }
-        public abstract class period2 : PX.Data.BQL.BqlInt.Field<period2> { }
+        [PXUIField(DisplayName = "Period02")]
+        public virtual int? Period02 { get; set; }
+        public abstract class period02 : PX.Data.BQL.BqlInt.Field<period02> { }
         #endregion
 
-        #region Period3
+        #region Period03
         [PXDBInt()]
-        [PXUIField(DisplayName = "Period3")]
-        public virtual int? Period3 { get; set; }
-        public abstract class period3 : PX.Data.BQL.BqlInt.Field<period3> { }
+        [PXUIField(DisplayName = "Period03")]
+        public virtual int? Period03 { get; set; }
+        public abstract class period03 : PX.Data.BQL.BqlInt.Field<period03> { }
         #endregion
 
-        #region Period4
+        #region Period04
         [PXDBInt()]
-        [PXUIField(DisplayName = "Period4")]
-        public virtual int? Period4 { get; set; }
-        public abstract class period4 : PX.Data.BQL.BqlInt.Field<period4> { }
+        [PXUIField(DisplayName = "Period04")]
+        public virtual int? Period04 { get; set; }
+        public abstract class period04 : PX.Data.BQL.BqlInt.Field<period04> { }
         #endregion
 
-        #region Period5
+        #region Period05
         [PXDBInt()]
-        [PXUIField(DisplayName = "Period5")]
-        public virtual int? Period5 { get; set; }
-        public abstract class period5 : PX.Data.BQL.BqlInt.Field<period5> { }
+        [PXUIField(DisplayName = "Period05")]
+        public virtual int? Period05 { get; set; }
+        public abstract class period05 : PX.Data.BQL.BqlInt.Field<period05> { }
         #endregion
 
-        #region Period6
+        #region Period06
         [PXDBInt()]
-        [PXUIField(DisplayName = "Period6")]
-        public virtual int? Period6 { get; set; }
-        public abstract class period6 : PX.Data.BQL.BqlInt.Field<period6> { }
+        [PXUIField(DisplayName = "Period06")]
+        public virtual int? Period06 { get; set; }
+        public abstract class period06 : PX.Data.BQL.BqlInt.Field<period06> { }
         #endregion
 
-        #region Period7
+        #region Period07
         [PXDBInt()]
-        [PXUIField(DisplayName = "Period7")]
-        public virtual int? Period7 { get; set; }
-        public abstract class period7 : PX.Data.BQL.BqlInt.Field<period7> { }
+        [PXUIField(DisplayName = "Period07")]
+        public virtual int? Period07 { get; set; }
+        public abstract class period07 : PX.Data.BQL.BqlInt.Field<period07> { }
         #endregion
 
-        #region Period8
+        #region Period08
         [PXDBInt()]
-        [PXUIField(DisplayName = "Period8")]
-        public virtual int? Period8 { get; set; }
-        public abstract class period8 : PX.Data.BQL.BqlInt.Field<period8> { }
+        [PXUIField(DisplayName = "Period08")]
+        public virtual int? Period08 { get; set; }
+        public abstract class period08 : PX.Data.BQL.BqlInt.Field<period08> { }
         #endregion
 
-        #region Period9
+        #region Period09
         [PXDBInt()]
-        [PXUIField(DisplayName = "Period9")]
-        public virtual int? Period9 { get; set; }
-        public abstract class period9 : PX.Data.BQL.BqlInt.Field<period9> { }
+        [PXUIField(DisplayName = "Period09")]
+        public virtual int? Period09 { get; set; }
+        public abstract class period09 : PX.Data.BQL.BqlInt.Field<period09> { }
         #endregion
 
         #region Period10
@@ -104,6 +117,7 @@ namespace CKMates.DAC
         public virtual int? Period12 { get; set; }
         public abstract class period12 : PX.Data.BQL.BqlInt.Field<period12> { }
         #endregion
+
 
         #region CreatedByID
         [PXDBCreatedByID()]

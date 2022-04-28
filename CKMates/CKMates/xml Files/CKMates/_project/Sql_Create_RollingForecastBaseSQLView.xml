@@ -1,0 +1,182 @@
+﻿<Sql TableName="Create_RollingForecastBaseSQLView" SqlScriptPriority="1" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[-- BaseInfo
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_RollingForecastBaseInfo' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_RollingForecastBaseInfo]	
+GO
+CREATE VIEW v_RollingForecastBaseInfo AS
+SELECT  acct.BAccountID,emp.SalesAcctID,tree.WorkGroupID,tree.CompanyID,tree.ContactID
+FROM LUMCompanyTreeMember tree
+INNER JOIN BAccount acct ON tree.CompanyID = acct.CompanyID
+							AND tree.ContactID = acct.DefContactID
+INNER JOIN EPEmployee emp ON tree.CompanyID = emp.CompanyID
+						 AND acct.BAccountID  = emp.BAccountID
+WHERE tree.RootWGID = 142 /*FIX*/
+GO
+
+
+-- Quota
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_BaseQuotaResult' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_BaseQuotaResult]	
+GO
+CREATE VIEW v_BaseQuotaResult AS
+SELECT budgetLineDet.CompanyID,
+	   'Quota' AS ForecastType,
+	   info.WorkGroupID AS WorkGroupID,
+	   budgetLineDet.FinYear AS FinYear,
+	   'Period' + SUBSTRING(budgetLineDet.FinPeriodID,5,2) AS SubFinPeriodID,
+	   SUM(budgetLineDet.Amount) AS Amount,
+	   1 AS OrderSeq
+FROM GLBudgetLineDetail budgetLineDet
+INNER JOIN v_RollingForecastBaseInfo info ON budgetLineDet.CompanyID = info.CompanyID
+										 AND budgetLineDet.AccountID = info.SalesAcctID
+										 AND budgetLineDet.BranchID = 108
+GROUP BY budgetLineDet.CompanyID, budgetLineDet.BranchID,budgetLineDet.LedgerID,budgetLineDet.FinYear,budgetLineDet.FinPeriodID,info.WorkGroupID
+GO
+
+	
+	
+-- Billing
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_BaseBillingResult' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_BaseBillingResult]	
+GO
+CREATE VIEW v_BaseBillingResult AS
+	SELECT invoice.CompanyID,
+		   N'實際Billing' AS ForecastType,
+		   treeH.ParentWGID AS WorkGroupID,
+		   YEAR(register.DocDate) AS FinYear,
+		   'Period' + RIGHT('0' + RTRIM (MONTH(register.DocDate)),2) AS SubFinPeriodID,
+		   SUM(register.CuryOrigDocAmt) AS Amount,
+		   2 AS OrderSeq
+	FROM ARRegister register
+	INNER JOIN ARInvoice invoice ON register.CompanyID = invoice.CompanyID
+								AND register.RefNbr = invoice.RefNbr
+								AND register.DocType = invoice.DocType
+	INNER JOIN v_RollingForecastBaseInfo baseInfo ON invoice.CompanyID = baseInfo.CompanyID 
+												 AND invoice.OwnerID = baseInfo.ContactID
+	INNER JOIN EPCompanyTreeH treeH ON baseInfo.CompanyID = treeH.CompanyID and baseInfo.WorkGroupID = treeH.WorkGroupID				  
+								   AND baseInfo.WorkGroupID IN (SELECT EPCompanyTreeH.WorkGroupID FROM EPCompanyTreeH WHERE EPCompanyTreeH.CompanyID = baseInfo.CompanyID and EPCompanyTreeH.ParentWGID = baseInfo.WorkGroupID)
+	GROUP BY invoice.CompanyID,treeH.ParentWGID, YEAR(register.DocDate),RIGHT('0' + RTRIM (MONTH(register.DocDate)),2)
+GO
+
+-- BillingMRC
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_BaseBillingMRCResult' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_BaseBillingMRCResult]	
+GO
+CREATE VIEW v_BaseBillingMRCResult AS
+	SELECT invoice.CompanyID,
+		   'Billing MRC' AS ForecastType,
+		   treeH.ParentWGID AS WorkGroupID,
+		   YEAR(register.DocDate) AS FinYear,
+		   'Period' + RIGHT('0' + RTRIM (MONTH(register.DocDate)),2) AS SubFinPeriodID,
+		   SUM(register.CuryOrigDocAmt) AS Amount,
+		   3 AS OrderSeq
+	FROM ARRegister register
+	INNER JOIN ARRegisterKvExt kvext ON register.CompanyID = kvext.CompanyID
+									AND register.NoteID = kvext.RecordID
+									AND kvext.FieldName = 'AttributeOTYPE'
+									AND kvext.ValueString = 'MRC'
+	INNER JOIN ARInvoice invoice ON register.CompanyID = invoice.CompanyID
+								AND register.RefNbr = invoice.RefNbr
+								AND register.DocType = invoice.DocType
+	INNER JOIN v_RollingForecastBaseInfo baseInfo ON invoice.CompanyID = baseInfo.CompanyID and invoice.OwnerID = baseInfo.ContactID
+	INNER JOIN EPCompanyTreeH treeH ON baseInfo.CompanyID = treeH.CompanyID and baseInfo.WorkGroupID = treeH.WorkGroupID
+								   AND baseInfo.WorkGroupID IN (SELECT EPCompanyTreeH.WorkGroupID FROM EPCompanyTreeH WHERE EPCompanyTreeH.CompanyID = baseInfo.CompanyID and EPCompanyTreeH.ParentWGID = baseInfo.WorkGroupID)
+	GROUP BY invoice.CompanyID,treeH.ParentWGID, YEAR(register.DocDate),RIGHT('0' + RTRIM (MONTH(register.DocDate)),2)
+	GO
+
+-- Opportunity MRC
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_BaseOpportunityMRCResult' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_BaseOpportunityMRCResult]	
+GO
+CREATE VIEW v_BaseOpportunityMRCResult AS
+	SELECT opp.CompanyID,
+		   N'新增MRC' AS ForecastType,
+		   treeH.ParentWGID AS WorkGroupID,
+		   YEAR(opp.CloseDate) AS FinYear,
+		   'Period' + RIGHT('0' + RTRIM (MONTH(opp.CloseDate)),2) AS SubFinPeriodID,
+		   SUM(
+			CASE 
+				WHEN opp.status = 'W' THEN revision.CuryAmount
+				WHEN opp.status = 'O' THEN probability.Probability * revision.ProductsAmount / 100
+				ELSE 0 END
+		   ) AS Amount,
+		   4 AS OrderSeq
+	FROM CROpportunity opp
+	INNER JOIN CROpportunityKvExt kvext ON opp.CompanyID = kvext.CompanyID
+										   AND opp.NoteID = kvext.RecordID
+										   AND kvext.FieldName = 'AttributeOTYPE'
+										   AND kvext.ValueString = 'MRC'
+	INNER JOIN CROpportunityRevision revision ON opp.CompanyID = revision.CompanyID
+											 AND opp.OpportunityID = revision.OpportunityID
+	INNER JOIN CROpportunityProbability probability ON opp.CompanyID = probability.CompanyID
+												   AND opp.StageID = probability.StageCode
+	INNER JOIN v_RollingForecastBaseInfo baseInfo ON opp.CompanyID = baseInfo.CompanyID 
+											     AND revision.OwnerID = baseInfo.ContactID
+	INNER JOIN EPCompanyTreeH treeH ON baseInfo.CompanyID = treeH.CompanyID and baseInfo.WorkGroupID = treeH.WorkGroupID
+									AND baseInfo.WorkGroupID IN (SELECT EPCompanyTreeH.WorkGroupID FROM EPCompanyTreeH WHERE EPCompanyTreeH.CompanyID = baseInfo.CompanyID and EPCompanyTreeH.ParentWGID = baseInfo.WorkGroupID)
+	GROUP BY opp.CompanyID,treeH.ParentWGID, YEAR(opp.CloseDate),RIGHT('0' + RTRIM (MONTH(opp.CloseDate)),2)
+	GO	
+		
+-- Opportunity Not MRC
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_BaseOpportunityNotMRCResult' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_BaseOpportunityNotMRCResult]	
+GO
+CREATE VIEW v_BaseOpportunityNotMRCResult AS
+	SELECT opp.CompanyID,
+		   N'新增OOC' AS ForecastType,
+		   treeH.ParentWGID AS WorkGroupID,
+		   YEAR(opp.CloseDate) AS FinYear,
+		   'Period' + RIGHT('0' + RTRIM (MONTH(opp.CloseDate)),2) AS SubFinPeriodID,
+		   SUM(
+			CASE 
+				WHEN opp.status = 'W' THEN revision.CuryAmount
+				WHEN opp.status = 'O' THEN probability.Probability * revision.ProductsAmount / 100
+				ELSE 0 END
+		   ) AS Amount,
+		   5 AS OrderSeq
+	FROM CROpportunity opp
+	INNER JOIN CROpportunityKvExt kvext ON opp.CompanyID = kvext.CompanyID
+										   AND opp.NoteID = kvext.RecordID
+										   AND kvext.FieldName = 'AttributeOTYPE'
+										   AND kvext.ValueString != 'MRC'
+	INNER JOIN CROpportunityRevision revision ON opp.CompanyID = revision.CompanyID
+											 AND opp.OpportunityID = revision.OpportunityID
+	INNER JOIN CROpportunityProbability probability ON opp.CompanyID = probability.CompanyID
+												   AND opp.StageID = probability.StageCode
+	INNER JOIN v_RollingForecastBaseInfo baseInfo ON opp.CompanyID = baseInfo.CompanyID 
+												 AND revision.OwnerID = baseInfo.ContactID
+	INNER JOIN EPCompanyTreeH treeH ON baseInfo.CompanyID = treeH.CompanyID and baseInfo.WorkGroupID = treeH.WorkGroupID
+								   AND baseInfo.WorkGroupID IN (SELECT EPCompanyTreeH.WorkGroupID FROM EPCompanyTreeH WHERE EPCompanyTreeH.CompanyID = baseInfo.CompanyID and EPCompanyTreeH.ParentWGID = baseInfo.WorkGroupID)
+	GROUP BY opp.CompanyID,treeH.ParentWGID, YEAR(opp.CloseDate),RIGHT('0' + RTRIM (MONTH(opp.CloseDate)),2)
+	GO]]></CDATA>
+</Sql>

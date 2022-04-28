@@ -3,15 +3,15 @@
   <col name="CompanyID" type="Int" default="Zero" />
   <col name="WorkgroupID" type="Int" />
   <col name="Year" type="Int" />
-  <col name="Period1" type="Int" nullable="true" />
-  <col name="Period2" type="Int" nullable="true" />
-  <col name="Period3" type="Int" nullable="true" />
-  <col name="Period4" type="Int" nullable="true" />
-  <col name="Period5" type="Int" nullable="true" />
-  <col name="Period6" type="Int" nullable="true" />
-  <col name="Period7" type="Int" nullable="true" />
-  <col name="Period8" type="Int" nullable="true" />
-  <col name="Period9" type="Int" nullable="true" />
+  <col name="Period01" type="Int" nullable="true" />
+  <col name="Period02" type="Int" nullable="true" />
+  <col name="Period03" type="Int" nullable="true" />
+  <col name="Period04" type="Int" nullable="true" />
+  <col name="Period05" type="Int" nullable="true" />
+  <col name="Period06" type="Int" nullable="true" />
+  <col name="Period07" type="Int" nullable="true" />
+  <col name="Period08" type="Int" nullable="true" />
+  <col name="Period09" type="Int" nullable="true" />
   <col name="Period10" type="Int" nullable="true" />
   <col name="Period11" type="Int" nullable="true" />
   <col name="Period12" type="Int" nullable="true" />

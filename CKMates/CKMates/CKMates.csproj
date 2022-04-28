@@ -58,6 +58,13 @@
   <ItemGroup>
     <Compile Include="DAC\LUMManualForecastAdjustment.cs" />
     <Compile Include="Graph\LUMForecastAdjustmentMaint.cs" />
+    <Compile Include="DAC\v_GI_RollingForcastProcessResult.cs" />
+    <Compile Include="DAC\v_RollingForcastProcessResult.cs" />
+    <Compile Include="DAC\v_BaseQuotaResult.cs" />
+    <Compile Include="DAC\v_BaseBillingResult.cs" />
+    <Compile Include="DAC\v_BaseBillingMRCResult.cs" />
+    <Compile Include="DAC\v_BaseOpportunityMRCResult.cs" />
+    <Compile Include="DAC\v_BaseOpportunityNotMRCResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
