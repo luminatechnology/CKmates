@@ -1,0 +1,1 @@
+﻿<MobileSiteMap ScreenID="CR306010" Script="update screen CR306010 {&#xD;&#xA;  update container &quot;Activities&quot;{&#xD;&#xA;    add field &quot;RelatedEntityDescription&quot;{&#xD;&#xA;      pickerType = searchable&#xD;&#xA;    }&#xD;&#xA;  }&#xD;&#xA;}" Type="update" />

@@ -56,7 +56,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAC\BAccountKvExt.cs" />
+    <Compile Include="DAC\CKCustPoolAttribute.cs" />
     <Compile Include="DAC\LUMManualForecastAdjustment.cs" />
+    <Compile Include="DAC\v_LUMCompanyTree.cs" />
+    <Compile Include="DAC_Inheritance\LUMBAccount.cs" />
+    <Compile Include="Descripter\LUMCustDropDownListAttribute.cs" />
     <Compile Include="Graph\LUMForecastAdjustmentMaint.cs" />
     <Compile Include="DAC\v_GI_RollingForcastProcessResult.cs" />
     <Compile Include="DAC\v_RollingForcastProcessResult.cs" />

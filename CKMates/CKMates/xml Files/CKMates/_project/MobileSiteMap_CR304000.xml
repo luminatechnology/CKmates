@@ -1,0 +1,1 @@
+﻿<MobileSiteMap ScreenID="CR304000" Script="update screen CR304000 {&#xD;&#xA;  update container &quot;OpportunitySummary&quot;{&#xD;&#xA;      add field &quot;EstimatedCloseDate&quot;&#xD;&#xA;    }&#xD;&#xA;}" Type="update" />
