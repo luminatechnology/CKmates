@@ -9,13 +9,13 @@ DROP VIEW [dbo].[CKCustPoolAttribute]
 GO
 CREATE VIEW CKCustPoolAttribute AS
 
-
-
+/*抓每一個Lead轉出去的Opportunity的最高status*/
 With Oppo_Status as 
 (
 select top 1 with ties
 	CROpportunityRevision.Companyid, 
 	CROpportunityRevision.BAccountID,
+	CROpportunity.LeadID,
 	CROpportunity.Status,
 	CROpportunity.StageID,
 	CROpportunityProbability.Probability
@@ -28,7 +28,7 @@ from CROpportunity
 	and CROpportunity.StageID = CROpportunityProbability.StageCode
 where BAccountID is not null  and CROpportunity.CompanyID > 0
 order by row_number() over (partition by CROpportunityRevision.Companyid, 
-	CROpportunityRevision.BAccountID order by CROpportunityProbability.Probability desc)
+	CROpportunityRevision.BAccountID, CROpportunity.LeadID order by CROpportunityProbability.Probability desc)
 )
 
 
@@ -85,6 +85,7 @@ FROM     Contact
 	LEFT OUTER JOIN Oppo_Status 
 			 ON  BAccount.CompanyID = Oppo_Status.CompanyID
 			 AND BAccount.BAccountID = Oppo_Status.BAccountID
+			 AND Contact.NoteID = Oppo_Status.LeadID
 
 
 /* 
