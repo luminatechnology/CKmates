@@ -15,12 +15,14 @@ namespace CKMates.DAC
         [PXDBInt(IsKey = true)]
         [PXDefault]
         [PXSelector(typeof(SelectFrom<EPCompanyTree>
-                          .InnerJoin<EPCompanyTreeMember>.On<EPCompanyTreeMember.workGroupID.IsEqual<EPCompanyTree.workGroupID>>
-                          .InnerJoin<BAccount2>.On<EPCompanyTreeMember.contactID.IsEqual<BAccount2.defContactID>>
+                          .InnerJoin<EPCompanyTreeH>.On<EPCompanyTree.workGroupID.IsEqual<EPCompanyTreeH.workGroupID>>
+                          .InnerJoin<LUMCompanyTreeMember>.On<EPCompanyTreeH.parentWGID.IsEqual<LUMCompanyTreeMember.workGroupID>>
+                          .InnerJoin<BAccount2>.On<LUMCompanyTreeMember.contactID.IsEqual<BAccount2.defContactID>>
                           .InnerJoin<EPEmployee>.On<BAccount2.bAccountID.IsEqual<EPEmployee.bAccountID>>
                           .Where<EPEmployee.userID.IsEqual<AccessInfo.userID.FromCurrent>>
                           .SearchFor<EPCompanyTree.workGroupID>),
-                    SubstituteKey = typeof(EPCompanyTree.description))]
+                        typeof(EPCompanyTree.description),
+                        SubstituteKey = typeof(EPCompanyTree.description))]
         [PXUIField(DisplayName = "Workgroup ID", Enabled = false)]
         public virtual int? WorkgroupID { get; set; }
         public abstract class workgroupID : PX.Data.BQL.BqlInt.Field<workgroupID> { }

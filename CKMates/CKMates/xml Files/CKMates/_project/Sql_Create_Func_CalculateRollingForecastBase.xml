@@ -55,6 +55,7 @@ BEGIN
 											   AND FinYear = @ActYear - 1
 											   AND SubFinPeriodID = 'Period12')
 				INSERT INTO @Result VALUES(N'祖產(Base)',@ActCompanyID,@ActWorkgroupID,@ActYear,'Period'+RIGHT('0' + RTRIM (@ActMonth),2),ISNULL(@ActAdjustment,@LastMonthBaseValue))
+				SET @LastMonthBaseValue = ISNULL(@ActAdjustment,@LastMonthBaseValue)
 			END -- End of ActMont = 1
 			ELSE
 			BEGIN
@@ -80,7 +81,7 @@ BEGIN
 					SELECT CASE 
 							WHEN @ActAdjustment IS NOT NULL THEN @ActAdjustment
 							WHEN @PrevBillingResult IS NOT NULL THEN @PrevBillingResult
-						   ELSE @LastMonthBaseValue + ISNULL(@PrevOppMRCResult,0) END AS GG
+						   ELSE ISNULL(@LastMonthBaseValue,0) + ISNULL(@PrevOppMRCResult,0) END AS CalculateResult
 				 )
 				 INSERT INTO @Result
 				 SELECT N'祖產(Base)',@ActCompanyID,@ActWorkgroupID,@ActYear,'Period'+RIGHT('0' + RTRIM (@ActMonth),2),@LastMonthBaseValue
