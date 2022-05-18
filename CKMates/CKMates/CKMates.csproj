@@ -70,6 +70,8 @@
     <Compile Include="DAC\v_BaseBillingMRCResult.cs" />
     <Compile Include="DAC\v_BaseOpportunityMRCResult.cs" />
     <Compile Include="DAC\v_BaseOpportunityNotMRCResult.cs" />
+    <Compile Include="DAC\LUMSalesRollingForecastResult.cs" />
+    <Compile Include="Graph\LUMUpdateSalesRollingForecastProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

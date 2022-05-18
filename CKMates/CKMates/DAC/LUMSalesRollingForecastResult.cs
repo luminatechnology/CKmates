@@ -5,11 +5,11 @@ using PX.Objects.CR;
 using PX.TM;
 using static PX.Data.PXAccess;
 
-namespace CKMates.DAC
+namespace CKMates
 {
     [Serializable]
-    [PXCacheName("v_GI_RollingForcastProcessResult")]
-    public class v_GI_RollingForcastProcessResult : IBqlTable
+    [PXCacheName("LUMSalesRollingForecastResult")]
+    public class LUMSalesRollingForecastResult : IBqlTable
     {
         #region Selected
         [PXBool()]
@@ -19,13 +19,13 @@ namespace CKMates.DAC
         #endregion
 
         #region ForecastType
-        [PXDBString(20, InputMask = "",IsKey = true)]
+        [PXDBString(100, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Forecast Type")]
         public virtual string ForecastType { get; set; }
         public abstract class forecastType : PX.Data.BQL.BqlString.Field<forecastType> { }
         #endregion
 
-        #region WorkGroupID
+        #region WorkgroupID
         [PXDBInt(IsKey = true)]
         [PXSelector(typeof(SelectFrom<EPCompanyTree>
                           .InnerJoin<EPCompanyTreeMember>.On<EPCompanyTreeMember.workGroupID.IsEqual<EPCompanyTree.workGroupID>>
@@ -33,9 +33,9 @@ namespace CKMates.DAC
                           .InnerJoin<EPEmployee>.On<BAccount2.bAccountID.IsEqual<EPEmployee.bAccountID>>
                           .SearchFor<EPCompanyTree.workGroupID>),
                     SubstituteKey = typeof(EPCompanyTree.description))]
-        [PXUIField(DisplayName = "Work Group ID")]
-        public virtual int? WorkGroupID { get; set; }
-        public abstract class workGroupID : PX.Data.BQL.BqlInt.Field<workGroupID> { }
+        [PXUIField(DisplayName = "Workgroup ID")]
+        public virtual int? WorkgroupID { get; set; }
+        public abstract class workgroupID : PX.Data.BQL.BqlInt.Field<workgroupID> { }
         #endregion
 
         #region FinYear
@@ -45,11 +45,11 @@ namespace CKMates.DAC
         public abstract class finYear : PX.Data.BQL.BqlInt.Field<finYear> { }
         #endregion
 
-        #region SubFinPeriodID
+        #region SubFinperiodID
         [PXDBDate(IsKey = true)]
-        [PXUIField(DisplayName = "Sub Fin Period ID")]
-        public virtual DateTime? SubFinPeriodID { get; set; }
-        public abstract class subFinPeriodID : PX.Data.BQL.BqlDateTime.Field<subFinPeriodID> { }
+        [PXUIField(DisplayName = "Sub Finperiod ID")]
+        public virtual DateTime? SubFinperiodID { get; set; }
+        public abstract class subFinperiodID : PX.Data.BQL.BqlDateTime.Field<subFinperiodID> { }
         #endregion
 
         #region Amount
@@ -61,9 +61,10 @@ namespace CKMates.DAC
 
         #region OrderSeq
         [PXDBInt()]
-        [PXUIField(DisplayName = "OrderSeq")]
+        [PXUIField(DisplayName = "Order Seq")]
         public virtual int? OrderSeq { get; set; }
         public abstract class orderSeq : PX.Data.BQL.BqlInt.Field<orderSeq> { }
         #endregion
+
     }
 }

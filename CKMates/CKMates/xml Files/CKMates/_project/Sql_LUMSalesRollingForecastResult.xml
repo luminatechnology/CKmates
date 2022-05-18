@@ -1,0 +1,11 @@
+﻿<Sql TableName="LUMSalesRollingForecastResult" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMSalesRollingForecastResult">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="ForecastType" type="NVarChar(100)" />
+  <col name="WorkgroupID" type="Int" nullable="true" />
+  <col name="FinYear" type="Int" nullable="true" />
+  <col name="SubFinperiodID" type="DateTime" nullable="true" />
+  <col name="Amount" type="Decimal(18,6)" nullable="true" />
+  <col name="OrderSeq" type="Int" nullable="true" />
+</table>]]></CDATA>
+</Sql>

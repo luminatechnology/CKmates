@@ -37,10 +37,10 @@ tmpEstimatePerformance AS (
 											   AND OppMRC.WorkGroupID = calcResult.WorkGroupID
 											   AND OppMRC.FinYear = calcResult.FinYear
 											   AND OppMRC.SubFinPeriodID = calcResult.SubFinPeriodID
-	FULL JOIN v_BaseOpportunityNotMRCResult OppNotMRC ON OppMRC.CompanyID = OppNotMRC.CompanyID
-													 AND OppMRC.WorkGroupID = OppNotMRC.WorkGroupID
-													 AND OppMRC.FinYear = OppNotMRC.FinYear
-													 AND OppMRC.SubFinPeriodID = OppNotMRC.SubFinPeriodID
+	FULL JOIN v_BaseOpportunityNotMRCResult OppNotMRC ON calcResult.CompanyID = OppNotMRC.CompanyID
+													 AND calcResult.WorkGroupID = OppNotMRC.WorkGroupID
+													 AND calcResult.FinYear = OppNotMRC.FinYear
+													 AND calcResult.SubFinPeriodID = OppNotMRC.SubFinPeriodID
 	
 ),
 tmpPerformance AS (
@@ -63,7 +63,9 @@ tmpAchievmentRate AS (
 		   quota.WorkGroupID,
 		   quota.FinYear,
 		   quota.SubFinperiodID,
-		   ISNULL(performance.Amount,0) / quota.Amount AS Amount,
+		   CASE 
+			WHEN quota.Amount = 0 THEN 0
+		   ELSE ISNULL(performance.Amount,0) / quota.Amount END AS Amount,
 		   10 AS OrderSeq
 	FROM v_BaseQuotaResult quota
 	FULL JOIN tmpPerformance performance ON quota.CompanyID = performance.CompanyID
@@ -116,7 +118,10 @@ FROM(
 		  quota.WorkGroupID,
 		  quota.FinYear,
 		  quota.SubFinperiodID,
-		  ISNULL(performance.SummaryValue,0) / ISNULL(quota.SummaryValue,0) AS Amount,
+		  CASE 
+			WHEN ISNULL(quota.SummaryValue,0) = 0 THEN 0 
+			ELSE ISNULL(performance.SummaryValue,0) / ISNULL(quota.SummaryValue,0) 
+		  END AS Amount ,
 		  11 AS OrderSeq
 	FROM (
 		SELECT *,SUM(Amount) Over(PARTITION  by Finyear,WorkgroupID,CompanyID,ForecastType ORDER BY SubFinPeriodID) AS SummaryValue
