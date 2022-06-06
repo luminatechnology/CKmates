@@ -31,6 +31,14 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\AWSSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.S3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\AWSSDK.S3.dll</HintPath>
+    </Reference>
     <Reference Include="PX.Common">
       <HintPath>..\..\..\..\Bin\PX.Common.dll</HintPath>
     </Reference>
@@ -62,6 +70,7 @@
     <Compile Include="DAC\v_LUMCompanyTree.cs" />
     <Compile Include="DAC_Inheritance\LUMBAccount.cs" />
     <Compile Include="Descripter\LUMCustDropDownListAttribute.cs" />
+    <Compile Include="Graph\LUMAmazonS3Setup.cs" />
     <Compile Include="Graph\LUMForecastAdjustmentMaint.cs" />
     <Compile Include="DAC\v_GI_RollingForcastProcessResult.cs" />
     <Compile Include="DAC\v_RollingForcastProcessResult.cs" />
@@ -71,7 +80,10 @@
     <Compile Include="DAC\v_BaseOpportunityMRCResult.cs" />
     <Compile Include="DAC\v_BaseOpportunityNotMRCResult.cs" />
     <Compile Include="DAC\LUMSalesRollingForecastResult.cs" />
+    <Compile Include="Graph\LUMUnsubscribeProcess.cs" />
     <Compile Include="Graph\LUMUpdateSalesRollingForecastProcess.cs" />
+    <Compile Include="DAC\LUMAmazonS3Preference.cs" />
+    <Compile Include="Graph_Extension\CRMassMailMaintExt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
