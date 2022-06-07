@@ -5,13 +5,13 @@
 <asp:Content ID="cont1" ContentPlaceHolderID="phDS" runat="Server">
     <px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%"
         TypeName="CKMates.Graph.LUMAmazonS3Setup"
-        PrimaryView="S3Preference">
+        PrimaryView="Preference">
         <CallbackCommands>
         </CallbackCommands>
     </px:PXDataSource>
 </asp:Content>
 <asp:Content ID="cont2" ContentPlaceHolderID="phF" runat="Server">
-    <px:PXTab DataMember="S3Preference" ID="tab" runat="server" DataSourceID="ds" Height="150px" Style="z-index: 100" Width="100%" AllowAutoHide="false">
+    <px:PXTab DataMember="Preference" ID="tab" runat="server" DataSourceID="ds" Height="150px" Style="z-index: 100" Width="100%" AllowAutoHide="false">
         <Items>
             <px:PXTabItem Text="Amazon S3">
                 <Template>

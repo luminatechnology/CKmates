@@ -3,7 +3,7 @@
 <%@ MasterType VirtualPath="~/MasterPages/FormDetail.master" %>
 
 <asp:Content ID="cont1" ContentPlaceHolderID="phDS" runat="Server">
-    <px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%"
+    <px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%" 
         TypeName="CKMates.Graph.LUMUnsubscribeProcess"
         PrimaryView="S3FileList">
         <CallbackCommands>

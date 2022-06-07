@@ -13,6 +13,6 @@ namespace CKMates.Graph
     {
         public PXSave<LUMAmazonS3Preference> Save;
         public PXCancel<LUMAmazonS3Preference> Cancel;
-        public SelectFrom<LUMAmazonS3Preference>.View S3Preference;
+        public SelectFrom<LUMAmazonS3Preference>.View Preference;
     }
 }

@@ -15,14 +15,14 @@ namespace CKMates.DAC
         #endregion
 
         #region BucketName
-        [PXDBString(200, IsKey = true, IsUnicode = true, InputMask = "")]
+        [PXDBString(200, IsUnicode = true, InputMask = "")]
         [PXUIField(DisplayName = "Bucket Name")]
         public virtual string BucketName { get; set; }
         public abstract class bucketName : PX.Data.BQL.BqlString.Field<bucketName> { }
         #endregion
 
         #region KeyName
-        [PXDBString(200, IsKey = true, IsUnicode = true, InputMask = "")]
+        [PXDBString(200, IsUnicode = true, InputMask = "")]
         [PXUIField(DisplayName = "Key Name")]
         public virtual string KeyName { get; set; }
         public abstract class keyName : PX.Data.BQL.BqlString.Field<keyName> { }

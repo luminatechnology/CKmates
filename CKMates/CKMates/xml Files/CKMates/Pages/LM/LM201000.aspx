@@ -57,18 +57,18 @@
                             <px:PXGridColumn DataField="ForecastType" TextAlign="Right" Width="150px" />
                             <px:PXGridColumn DataField="FinYear" TextAlign="Right" Width="150px" />
                             <px:PXGridColumn DataField="WorkGroupID" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period01" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period02" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period03" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period04" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period05" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period06" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period07" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period08" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period09" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period10" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period11" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period12" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod01" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod02" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod03" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod04" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod05" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod06" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod07" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod08" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod09" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod10" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod11" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="DisplayPeriod12" TextAlign="Right" Width="150px" />
                         </Columns>
                     </px:PXGridLevel>
                 </Levels>
