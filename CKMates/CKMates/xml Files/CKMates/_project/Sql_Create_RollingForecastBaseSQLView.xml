@@ -119,10 +119,9 @@ CREATE VIEW v_BaseOpportunityMRCResult AS
 		   treeH.ParentWGID AS WorkGroupID,
 		   YEAR(opp.CloseDate) AS FinYear,
 		   'Period' + RIGHT('0' + RTRIM (MONTH(opp.CloseDate)),2) AS SubFinPeriodID,
-		   SUM(
+		    SUM(
 			CASE 
-				WHEN opp.status = 'W' THEN revision.CuryAmount
-				WHEN opp.status = 'O' THEN probability.Probability * revision.ProductsAmount / 100
+				WHEN opp.status != 'L' AND ISNULL(BudgetKvext.ValueString,'YES') != 'NO' THEN probability.Probability * revision.ProductsAmount / 100
 				ELSE 0 END
 		   ) AS Amount,
 		   4 AS OrderSeq
@@ -131,6 +130,9 @@ CREATE VIEW v_BaseOpportunityMRCResult AS
 										   AND opp.NoteID = kvext.RecordID
 										   AND kvext.FieldName = 'AttributeOTYPE'
 										   AND kvext.ValueString = 'MRC'
+	LEFT JOIN CROpportunityKvExt BudgetKvext ON opp.CompanyID = BudgetKvext.CompanyID
+										   AND opp.NoteID = BudgetKvext.RecordID
+										   AND BudgetKvext.FieldName = 'AttributeBUDGET'
 	INNER JOIN CROpportunityRevision revision ON opp.CompanyID = revision.CompanyID
 											 AND opp.OpportunityID = revision.OpportunityID
 	INNER JOIN CROpportunityProbability probability ON opp.CompanyID = probability.CompanyID
@@ -159,8 +161,7 @@ CREATE VIEW v_BaseOpportunityNotMRCResult AS
 		   'Period' + RIGHT('0' + RTRIM (MONTH(opp.CloseDate)),2) AS SubFinPeriodID,
 		   SUM(
 			CASE 
-				WHEN opp.status = 'W' THEN revision.CuryAmount
-				WHEN opp.status = 'O' THEN probability.Probability * revision.ProductsAmount / 100
+				WHEN opp.status != 'L' AND ISNULL(BudgetKvext.ValueString,'YES') != 'NO' THEN probability.Probability * revision.ProductsAmount / 100
 				ELSE 0 END
 		   ) AS Amount,
 		   5 AS OrderSeq
@@ -169,6 +170,9 @@ CREATE VIEW v_BaseOpportunityNotMRCResult AS
 										   AND opp.NoteID = kvext.RecordID
 										   AND kvext.FieldName = 'AttributeOTYPE'
 										   AND kvext.ValueString != 'MRC'
+	LEFT JOIN CROpportunityKvExt BudgetKvext ON opp.CompanyID = BudgetKvext.CompanyID
+										   AND opp.NoteID = BudgetKvext.RecordID
+										   AND BudgetKvext.FieldName = 'AttributeBUDGET'
 	INNER JOIN CROpportunityRevision revision ON opp.CompanyID = revision.CompanyID
 											 AND opp.OpportunityID = revision.OpportunityID
 	INNER JOIN CROpportunityProbability probability ON opp.CompanyID = probability.CompanyID
