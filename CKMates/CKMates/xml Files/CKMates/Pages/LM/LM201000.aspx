@@ -20,7 +20,7 @@
     <px:PXSplitContainer ID="SptCont1" runat="server" SkinID="Horizontal" SplitterPosition="150" Height="600px" Panel1MinSize="100" Panel2MinSize="100">
         <AutoSize Container="Window" Enabled="true" MinHeight="100" />
         <Template1>
-            <px:PXGrid ID="gridForecast" runat="server" DataSourceID="ds" Width="100%" Height="100%" SkinID="Details" Caption="Forecast" SyncPosition="true">
+            <px:PXGrid ID="gridForecast" runat="server" DataSourceID="ds" Width="100%" Height="100%" SkinID="DetailsInTab" Caption="Forecast" SyncPosition="true">
                 <Levels>
                     <px:PXGridLevel DataMember="Transactions">
                         <Columns>
@@ -35,9 +35,9 @@
                             <px:PXGridColumn DataField="Period07" TextAlign="Right" Width="150px" />
                             <px:PXGridColumn DataField="Period08" TextAlign="Right" Width="150px" />
                             <px:PXGridColumn DataField="Period09" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period010" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period011" TextAlign="Right" Width="150px" />
-                            <px:PXGridColumn DataField="Period012" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="Period10" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="Period11" TextAlign="Right" Width="150px" />
+                            <px:PXGridColumn DataField="Period12" TextAlign="Right" Width="150px" />
                         </Columns>
                     </px:PXGridLevel>
                 </Levels>
