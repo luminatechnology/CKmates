@@ -121,7 +121,7 @@ CREATE VIEW v_BaseOpportunityMRCResult AS
 		   'Period' + RIGHT('0' + RTRIM (MONTH(opp.CloseDate)),2) AS SubFinPeriodID,
 		    SUM(
 			CASE 
-				WHEN opp.status != 'L' AND ISNULL(BudgetKvext.ValueString,'YES') != 'NO' THEN probability.Probability * revision.ProductsAmount / 100
+				WHEN opp.status != 'L' AND ISNULL(BudgetKvext.ValueString,'YES') != 'NO' AND opp.stageID !='Q' THEN probability.Probability * revision.ProductsAmount / 100
 				ELSE 0 END
 		   ) AS Amount,
 		   4 AS OrderSeq
@@ -161,7 +161,7 @@ CREATE VIEW v_BaseOpportunityNotMRCResult AS
 		   'Period' + RIGHT('0' + RTRIM (MONTH(opp.CloseDate)),2) AS SubFinPeriodID,
 		   SUM(
 			CASE 
-				WHEN opp.status != 'L' AND ISNULL(BudgetKvext.ValueString,'YES') != 'NO' THEN probability.Probability * revision.ProductsAmount / 100
+				WHEN opp.status != 'L' AND ISNULL(BudgetKvext.ValueString,'YES') != 'NO'  AND opp.stageID !='Q'  THEN probability.Probability * revision.ProductsAmount / 100
 				ELSE 0 END
 		   ) AS Amount,
 		   5 AS OrderSeq
