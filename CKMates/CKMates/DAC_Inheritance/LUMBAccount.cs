@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CKMates.DAC_Inheritance
 {
-    public class CKMatesBAccount : BAccountR
+    public class CKMatesBAccount : IBqlTable
     {
         [PXSelector(typeof(SelectFrom<BAccountR>
                            .InnerJoin<BAccountKvExt>.On<BAccountR.noteID.IsEqual<BAccountKvExt.recordID>>
@@ -20,7 +20,7 @@ namespace CKMates.DAC_Inheritance
             typeof(BAccountR.acctCD),
             typeof(BAccountR.acctName),
             SubstituteKey = typeof(BAccountR.acctCD))]
-        public override Int32? BAccountID { get; set; }
+        public virtual Int32? BAccountID { get; set; }
     }
 
     public class CTYPEAttr : PX.Data.BQL.BqlString.Constant<CTYPEAttr>
