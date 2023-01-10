@@ -17,7 +17,7 @@
     </px:PXFormView>
 </asp:Content>
 <asp:Content ID="cont3" ContentPlaceHolderID="phG" runat="Server">
-    <px:PXSplitContainer ID="SptCont1" runat="server" SkinID="Horizontal" SplitterPosition="150" Height="600px" Panel1MinSize="100" Panel2MinSize="100">
+    <px:PXSplitContainer ID="SptCont1" runat="server" SkinID="Horizontal" SplitterPosition="150" Height="600px" Panel1MinSize="600" Panel2MinSize="100">
         <AutoSize Container="Window" Enabled="true" MinHeight="100" />
         <Template1>
             <px:PXGrid ID="gridForecast" runat="server" DataSourceID="ds" Width="100%" Height="100%" SkinID="DetailsInTab" Caption="Forecast" SyncPosition="true">
@@ -49,7 +49,7 @@
                 <ActionBar ActionsText="False" />
             </px:PXGrid>
         </Template1>
-        <Template2>
+<%--        <Template2>
             <px:PXGrid ID="gridResult" runat="server" DataSourceID="ds" Width="100%" SkinID="DetailsInTab" SyncPosition="True">
                 <Levels>
                     <px:PXGridLevel DataMember="RollingResult">
@@ -76,8 +76,7 @@
                 <AutoSize Enabled="True" MinHeight="200" />
                 <AutoCallBack></AutoCallBack>
             </px:PXGrid>
-            </Template>
-                <autosize enabled="True" />
-        </Template2>
+        </Template2>--%>
+        <AutoSize Enabled="True" />
     </px:PXSplitContainer>
 </asp:Content>

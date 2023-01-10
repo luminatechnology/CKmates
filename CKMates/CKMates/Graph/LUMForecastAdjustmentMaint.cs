@@ -24,10 +24,10 @@ namespace CKMates.Graph
                .Where<LUMManualForecastAdjustment.workgroupID.IsEqual<ForecastFilter.workgroupID.FromCurrent>
                  .And<LUMManualForecastAdjustment.year.IsEqual<ForecastFilter.year.FromCurrent>>>.View Transactions;
 
-        public SelectFrom<v_RollingForcastProcessResult>
-               .Where<v_RollingForcastProcessResult.workGroupID.IsEqual<ForecastFilter.workgroupID.FromCurrent>
-                 .And<v_RollingForcastProcessResult.finYear.IsEqual<ForecastFilter.year.FromCurrent>>>
-               .OrderBy<Asc<v_RollingForcastProcessResult.orderSeq>>.View RollingResult;
+        //public SelectFrom<v_RollingForcastProcessResult>
+        //       .Where<v_RollingForcastProcessResult.workGroupID.IsEqual<ForecastFilter.workgroupID.FromCurrent>
+        //         .And<v_RollingForcastProcessResult.finYear.IsEqual<ForecastFilter.year.FromCurrent>>>
+        //       .OrderBy<Asc<v_RollingForcastProcessResult.orderSeq>>.View RollingResult;
 
 
         public IEnumerable transactions()
@@ -51,55 +51,55 @@ namespace CKMates.Graph
             return result;
         }
 
-        public IEnumerable rollingResult()
-        {
-            PXView select = new PXView(this, false, RollingResult.View.BqlSelect);
-            Int32 totalrow = 0;
-            Int32 startrow = PXView.StartRow;
-            List<object> result = select.Select(PXView.Currents, PXView.Parameters,
-                   PXView.Searches, PXView.SortColumns, PXView.Descendings,
-                   PXView.Filters, ref startrow, PXView.MaximumRows, ref totalrow);
-            PXView.StartRow = 0;
-            this.RollingResult.View.Clear();
-            foreach (v_RollingForcastProcessResult row in result)
-            {
-                if (row.ForecastType == "當月達成率" || row.ForecastType == "當月累計達成率")
-                {
-                    #region Setting Display
-                    row.DisplayPeriod01 = $"{Math.Round((row.Period01 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod02 = $"{Math.Round((row.Period02 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod03 = $"{Math.Round((row.Period03 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod04 = $"{Math.Round((row.Period04 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod05 = $"{Math.Round((row.Period05 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod06 = $"{Math.Round((row.Period06 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod07 = $"{Math.Round((row.Period07 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod08 = $"{Math.Round((row.Period08 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod09 = $"{Math.Round((row.Period09 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod10 = $"{Math.Round((row.Period10 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod11 = $"{Math.Round((row.Period11 ?? 0) * 100, 2)}%";
-                    row.DisplayPeriod12 = $"{Math.Round((row.Period12 ?? 0) * 100, 2)}%";
-                    #endregion
-                }
-                else
-                {
-                    #region Setting Display
-                    row.DisplayPeriod01 = row.Period01.HasValue ? Math.Round(row.Period01.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod02 = row.Period02.HasValue ? Math.Round(row.Period02.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod03 = row.Period03.HasValue ? Math.Round(row.Period03.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod04 = row.Period04.HasValue ? Math.Round(row.Period04.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod05 = row.Period05.HasValue ? Math.Round(row.Period05.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod06 = row.Period06.HasValue ? Math.Round(row.Period06.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod07 = row.Period07.HasValue ? Math.Round(row.Period07.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod08 = row.Period08.HasValue ? Math.Round(row.Period08.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod09 = row.Period09.HasValue ? Math.Round(row.Period09.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod10 = row.Period10.HasValue ? Math.Round(row.Period10.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod11 = row.Period11.HasValue ? Math.Round(row.Period11.Value, 0).ToString("N0") : string.Empty;
-                    row.DisplayPeriod12 = row.Period12.HasValue ? Math.Round(row.Period12.Value, 0).ToString("N0") : string.Empty;
-                    #endregion
-                }
-            }
-            return result;
-        }
+        //public IEnumerable rollingResult()
+        //{
+        //    PXView select = new PXView(this, false, RollingResult.View.BqlSelect);
+        //    Int32 totalrow = 0;
+        //    Int32 startrow = PXView.StartRow;
+        //    List<object> result = select.Select(PXView.Currents, PXView.Parameters,
+        //           PXView.Searches, PXView.SortColumns, PXView.Descendings,
+        //           PXView.Filters, ref startrow, PXView.MaximumRows, ref totalrow);
+        //    PXView.StartRow = 0;
+        //    this.RollingResult.View.Clear();
+        //    foreach (v_RollingForcastProcessResult row in result)
+        //    {
+        //        if (row.ForecastType == "當月達成率" || row.ForecastType == "當月累計達成率")
+        //        {
+        //            #region Setting Display
+        //            row.DisplayPeriod01 = $"{Math.Round((row.Period01 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod02 = $"{Math.Round((row.Period02 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod03 = $"{Math.Round((row.Period03 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod04 = $"{Math.Round((row.Period04 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod05 = $"{Math.Round((row.Period05 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod06 = $"{Math.Round((row.Period06 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod07 = $"{Math.Round((row.Period07 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod08 = $"{Math.Round((row.Period08 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod09 = $"{Math.Round((row.Period09 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod10 = $"{Math.Round((row.Period10 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod11 = $"{Math.Round((row.Period11 ?? 0) * 100, 2)}%";
+        //            row.DisplayPeriod12 = $"{Math.Round((row.Period12 ?? 0) * 100, 2)}%";
+        //            #endregion
+        //        }
+        //        else
+        //        {
+        //            #region Setting Display
+        //            row.DisplayPeriod01 = row.Period01.HasValue ? Math.Round(row.Period01.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod02 = row.Period02.HasValue ? Math.Round(row.Period02.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod03 = row.Period03.HasValue ? Math.Round(row.Period03.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod04 = row.Period04.HasValue ? Math.Round(row.Period04.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod05 = row.Period05.HasValue ? Math.Round(row.Period05.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod06 = row.Period06.HasValue ? Math.Round(row.Period06.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod07 = row.Period07.HasValue ? Math.Round(row.Period07.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod08 = row.Period08.HasValue ? Math.Round(row.Period08.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod09 = row.Period09.HasValue ? Math.Round(row.Period09.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod10 = row.Period10.HasValue ? Math.Round(row.Period10.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod11 = row.Period11.HasValue ? Math.Round(row.Period11.Value, 0).ToString("N0") : string.Empty;
+        //            row.DisplayPeriod12 = row.Period12.HasValue ? Math.Round(row.Period12.Value, 0).ToString("N0") : string.Empty;
+        //            #endregion
+        //        }
+        //    }
+        //    return result;
+        //}
 
         #region Event
 
