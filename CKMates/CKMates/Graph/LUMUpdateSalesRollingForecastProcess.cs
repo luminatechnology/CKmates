@@ -40,7 +40,7 @@ namespace CKMates.Graph
         {
             try
             {
-                using (new PXCommandScope(300))
+                using (new PXCommandScope(3600))
                 {
                     using (PXTransactionScope sc = new PXTransactionScope())
                     {
