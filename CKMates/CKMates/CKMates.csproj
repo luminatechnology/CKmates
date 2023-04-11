@@ -48,10 +48,12 @@
     <Reference Include="PX.CS.Contracts">
       <HintPath>..\..\..\..\Bin\PX.CS.Contracts.dll</HintPath>
     </Reference>
-    <Reference Include="PX.Data">
+    <Reference Include="PX.Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Bin\PX.Data.dll</HintPath>
     </Reference>
-    <Reference Include="PX.Data.BQL.Fluent">
+    <Reference Include="PX.Data.BQL.Fluent, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Bin\PX.Data.BQL.Fluent.dll</HintPath>
     </Reference>
     <Reference Include="PX.Objects">

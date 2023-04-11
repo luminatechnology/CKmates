@@ -13,7 +13,7 @@ namespace CKMates.Graph_Extension
     public class CRMassMailMaintExt : PXGraphExtension<CRMassMailMaint>
     {
         public PXAction<CRMassMail> Send;
-        [PXUIField(DisplayName = Messages.Send)]
+        [PXUIField(DisplayName = PX.Objects.CR.Messages.Send)]
         [PXSendMailButton]
         public virtual IEnumerable send(PXAdapter a)
         {
