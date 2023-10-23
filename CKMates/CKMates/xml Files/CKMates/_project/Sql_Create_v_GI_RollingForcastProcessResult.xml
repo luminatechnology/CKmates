@@ -167,24 +167,27 @@ FROM(
 	UNION
 	SELECT CompanyID,ForecastType,WorkGroupID,FinYear,SubFinperiodID,Amount,OrderSeq
 	FROM(
-		 SELECT CompanyID,
-				 N'預估Base調整' ForecastType,
-				WorkGroupID,
-				Year AS FinYear,
-				6 AS OrderSeq,
-				ISNULL(Period01,0) AS Period01,
-				ISNULL(Period02,0) AS Period02,
-				ISNULL(Period03,0) AS Period03,
-				ISNULL(Period04,0) AS Period04,
-				ISNULL(Period05,0) AS Period05,
-				ISNULL(Period06,0) AS Period06,
-				ISNULL(Period07,0) AS Period07,
-				ISNULL(Period08,0) AS Period08,
-				ISNULL(Period09,0) AS Period09,
-				ISNULL(Period10,0) AS Period10,
-				ISNULL(Period11,0) AS Period11,
-				ISNULL(Period12,0) AS Period12
-		 FROM LUMManualForecastAdjustment
+		SELECT f.CompanyID,
+			   N'預估Base調整' ForecastType,
+			   f.WorkGroupID,
+			   Year AS FinYear,
+			   6 AS OrderSeq,
+			   ISNULL(Period01,0) AS Period01,
+			   ISNULL(Period02,0) AS Period02,
+			   ISNULL(Period03,0) AS Period03,
+			   ISNULL(Period04,0) AS Period04,
+			   ISNULL(Period05,0) AS Period05,
+			   ISNULL(Period06,0) AS Period06,
+			   ISNULL(Period07,0) AS Period07,
+			   ISNULL(Period08,0) AS Period08,
+			   ISNULL(Period09,0) AS Period09,
+			   ISNULL(Period10,0) AS Period10,
+			   ISNULL(Period11,0) AS Period11,
+			   ISNULL(Period12,0) AS Period12
+		FROM LUMManualForecastAdjustment f
+		INNER JOIN EPCompanyTree t ON f.CompanyID = t.CompanyID
+							   AND f.WorkgroupID = t.WorkGroupID
+		WHERE f.CompanyID > 0
 	)t
 	UNPIVOT(
 		Amount FOR SubFinperiodID IN (t.[Period01],t.[Period02],t.[Period03],t.[Period04],t.[Period05],t.[Period06],t.[Period07],t.[Period08],t.[Period09],t.[Period10],t.[Period11],t.[Period12])
