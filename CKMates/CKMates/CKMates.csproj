@@ -56,6 +56,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Bin\PX.Data.BQL.Fluent.dll</HintPath>
     </Reference>
+    <Reference Include="PX.Export, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\PX.Export.dll</HintPath>
+    </Reference>
     <Reference Include="PX.Objects">
       <HintPath>..\..\..\..\Bin\PX.Objects.DLL</HintPath>
     </Reference>
@@ -70,9 +74,12 @@
     <Compile Include="DAC\CKCustPoolAttribute.cs" />
     <Compile Include="DAC\LUMManualForecastAdjustment.cs" />
     <Compile Include="DAC\v_LUMCompanyTree.cs" />
+    <Compile Include="DAC_Extension\CROpportunityExt.cs" />
     <Compile Include="DAC_Inheritance\LUMBAccount.cs" />
     <Compile Include="Descripter\LUMCustDropDownListAttribute.cs" />
     <Compile Include="Graph\LUMAmazonS3Setup.cs" />
+    <Compile Include="Graph\LUMExportCallReportProcess.cs" />
+    <Compile Include="Graph\LUMExportOpportunityToExcelProcess.cs" />
     <Compile Include="Graph\LUMForecastAdjustmentMaint.cs" />
     <Compile Include="DAC\v_GI_RollingForcastProcessResult.cs" />
     <Compile Include="DAC\v_RollingForcastProcessResult.cs" />
